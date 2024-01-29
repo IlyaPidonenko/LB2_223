@@ -45,6 +45,17 @@ export class Database {
     }
   }
 
+  public getPosts = async (): Promise<any> => {
+    const query = `SELECT * FROM posts`;
+    try {
+        const res = await this.executeSQL(query);
+        return res;
+    } catch (err) {
+        console.error('Fehler beim Abrufen der Posts:', err);
+        throw err;
+    }
+  }
+
   public createUser = async (username: string, password: string): Promise<any> => {
     const query = `INSERT INTO users (username, password) VALUES (?, ?)`;
     try {

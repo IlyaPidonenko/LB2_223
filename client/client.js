@@ -1,7 +1,4 @@
-
 document.addEventListener('DOMContentLoaded', () => {
-  
-  
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
@@ -32,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-
-
 const sendTweetRequest = (content) => {
   fetch('/tweet', {
     method: 'POST',
@@ -42,11 +37,34 @@ const sendTweetRequest = (content) => {
     },
     body: JSON.stringify({ content })
   })
-  .then(response => response.text())
-  .then(data => console.log(data))
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    loadPosts();
+    alert(data.message);
+
+    // Nach erfolgreichem Tweet erst anzeigen
+    
+  })
   .catch(error => console.error('Fehler bei der Anfrage:', error));
 };
 
+function loadPosts() {
+  fetch('/getPosts')
+      .then(response => response.json())
+      .then(posts => {
+          console.log('Geladene Posts:', posts); // Debug-Ausgabe
+          postsContainer.innerHTML = ''; // Container leeren
+          posts.forEach(post => {
+              const postElement = document.createElement('div');
+              postElement.innerText = `${post.text}`;
+              postsContainer.appendChild(postElement);
+          });
+      })
+      .catch(error => {
+          console.error('Fehler beim Laden der Posts:', error);
+      });
+}
 
 const sendLoginRequest = (username, password) => {
   fetch('/login', {
@@ -58,9 +76,8 @@ const sendLoginRequest = (username, password) => {
   })
   .then(response => response.json())
   .then(data => {
-    alert(data.message); // Hier wird die Benachrichtigung angezeigt
-    
-    window.location.href = './home.html'; // Hier wird zur Home-Seite weitergeleitet
+    alert(data.message);
+    window.location.href = './home.html';
   })
   .catch(error => console.error('Fehler bei der Anfrage:', error));
 };

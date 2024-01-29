@@ -9,17 +9,11 @@ export class API {
     this.app = app;
     this.database = database;
 
-
-    this.app.get('/hello', this.sayHello);
+    this.app.get('/getPosts', this.getPosts.bind(this));
     this.app.post('/login', this.login.bind(this));
     this.app.post('/register', this.register.bind(this));
     this.app.post('/tweet', this.tweet.bind(this));
   }
-
-  private sayHello(req: Request, res: Response) {
-    res.send('Hello There!');
-  }
-
 
   private async tweet(req: Request, res: Response) {
     const {content } = req.body;
@@ -37,6 +31,16 @@ export class API {
       res.status(200).json({ message: 'Login erfolgreich' });
     } else {
       res.status(401).send('Ungültige Anmeldedaten');
+    }
+  }
+
+  private async getPosts(req: Request, res: Response) {
+    try {
+      const posts = await this.database.getPosts();
+      res.json(posts);
+    } catch (err) {
+      console.error('Fehler beim Abrufen der Posts:', err);
+      res.status(500).send('Serverfehler beim Abrufen der Posts.');
     }
   }
 
