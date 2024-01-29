@@ -9,21 +9,32 @@ export class API {
     this.app = app;
     this.database = database;
 
-    // Binden von 'this' an die Methoden
+
     this.app.get('/hello', this.sayHello);
     this.app.post('/login', this.login.bind(this));
     this.app.post('/register', this.register.bind(this));
+    this.app.post('/tweet', this.tweet.bind(this));
   }
 
   private sayHello(req: Request, res: Response) {
     res.send('Hello There!');
   }
 
+
+  private async tweet(req: Request, res: Response) {
+    const {content } = req.body;
+
+      await this.database.createTweet(content);
+      res.send('Registrierung erfolgreich!');
+
+  }
+
   private async login(req: Request, res: Response) {
     const { username, password } = req.body;
     const user = await this.database.getUser(username);
+  
     if (user && user.password === password) {
-      res.send('Login erfolgreich!');
+      res.status(200).json({ message: 'Login erfolgreich' });
     } else {
       res.status(401).send('Ungültige Anmeldedaten');
     }

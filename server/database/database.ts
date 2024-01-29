@@ -55,4 +55,14 @@ export class Database {
       return null;
     }
   }
+  public createTweet = async (content: string): Promise<any> => {
+    const query = `INSERT INTO tweets (content) VALUES (?)`;
+    try {
+      const res = await this.executeSQL(query, [content]);
+      return res;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+  }
 }
